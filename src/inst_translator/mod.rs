@@ -59,7 +59,7 @@ impl<'a> InstTranslator<'a> {
     /// Translates the function to cranelift IR.
     pub fn translate(&mut self) {
         // Create cranelift blocks for every blocks
-        for block in self.func.get_blocks() {
+        for block in self.func.sorted_blocks() {
             let ir_block = self.builder.create_block();
             self.blocks.insert(block, ir_block);
         }
