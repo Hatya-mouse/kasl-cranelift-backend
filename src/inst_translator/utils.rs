@@ -16,7 +16,6 @@
 
 use cranelift::prelude::Variable;
 use cranelift_codegen::ir::{self, BlockArg};
-
 use crate::InstTranslator;
 
 impl InstTranslator<'_> {

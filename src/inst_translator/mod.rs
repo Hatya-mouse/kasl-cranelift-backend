@@ -64,6 +64,14 @@ impl<'a> InstTranslator<'a> {
             self.blocks.insert(block, ir_block);
         }
 
+        // Declare all variables
+        for kasl_var in self.func.get_vars() {
+            let var_ty = self.func.get_var_type(kasl_var);
+            let ir_ty = self.type_converter.convert(var_ty);
+            let ir_var = self.builder.declare_var(ir_ty);
+            self.vars.insert(kasl_var, ir_var);
+        }
+
         // Translate the blocks
         for (kasl_block, ir_block) in self.blocks.clone() {
             self.translate_block(kasl_block, ir_block);
