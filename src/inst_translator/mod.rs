@@ -60,11 +60,11 @@ impl<'a> InstTranslator<'a> {
     pub fn translate(&mut self) {
         // Create cranelift blocks for every blocks
         let blocks = self.func.sorted_blocks();
-        println!("{:?}", blocks);
         for block in blocks {
             let ir_block = self.builder.create_block();
             self.blocks.insert(block, ir_block);
         }
+        println!("{:?}", self.blocks);
 
         // Declare all variables
         for kasl_var in self.func.get_vars() {

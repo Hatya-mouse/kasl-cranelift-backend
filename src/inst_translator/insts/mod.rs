@@ -30,8 +30,6 @@ use kasl_ir::Inst;
 
 impl InstTranslator<'_> {
     pub(super) fn translate_inst(&mut self, inst: Inst) {
-        println!("{}", inst);
-
         match inst {
             Inst::Alloc { size, align, dst } => {
                 // Create a slot and allocate the slot
