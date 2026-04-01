@@ -18,6 +18,7 @@ mod bin_op;
 mod cmp;
 mod cmp_imm;
 mod const_val;
+mod ext_func_call;
 mod resize;
 mod unary_op;
 
@@ -188,6 +189,12 @@ impl InstTranslator<'_> {
             }
             Inst::FBinOp { op, lhs, rhs, dst } => {
                 self.translate_fbop(op, lhs, rhs, dst);
+            }
+            Inst::IUnaryOp { op, operand, dst } => {
+                self.translate_iuop(op, operand, dst);
+            }
+            Inst::FUnaryOp { op, operand, dst } => {
+                self.translate_fuop(op, operand, dst);
             }
             _ => (),
         }

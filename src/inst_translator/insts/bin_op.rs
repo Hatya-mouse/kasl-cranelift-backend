@@ -15,9 +15,8 @@
 //
 
 use crate::InstTranslator;
-use cranelift::prelude::{AbiParam, InstBuilder};
-use cranelift_module::{Linkage, Module};
-use kasl_ir::{FloatBinOp, IRType, IntBinOp, Value};
+use cranelift::prelude::InstBuilder;
+use kasl_ir::{FloatBinOp, IntBinOp, Value};
 
 impl InstTranslator<'_> {
     pub(super) fn translate_ibop(&mut self, op: IntBinOp, lhs: Value, rhs: Value, dst: Value) {
@@ -64,50 +63,13 @@ impl InstTranslator<'_> {
                 self.builder.ins().fsub(ir_lhs, floor_mul)
             }
             FloatBinOp::Pow => {
-                let lhs_type = self.func.get_val_type(lhs);
-                let ir_lhs_type = self.type_converter.convert(lhs_type);
-                let mut sig = self.module.make_signature();
-
-                sig.params
-                    .extend_from_slice(&[AbiParam::new(ir_lhs_type), AbiParam::new(ir_lhs_type)]);
-                sig.returns.push(AbiParam::new(ir_lhs_type));
-                let func_id = match lhs_type {
-                    IRType::F32 => self
-                        .module
-                        .declare_function("f32_powf", Linkage::Import, &sig)
-                        .unwrap(),
-                    IRType::F64 => self
-                        .module
-                        .declare_function("f64_powf", Linkage::Import, &sig)
-                        .unwrap(),
-                    _ => panic!("Non-float type is passed to fbop"),
-                };
-                let func_ref = self.module.declare_func_in_func(func_id, self.builder.func);
-                let call = self.builder.ins().call(func_ref, &[ir_lhs, ir_rhs]);
-                self.builder.inst_results(call)[0]
+                self.call_ext_func_f("f32_powf", "f64_powf", &[lhs, rhs], &[ir_lhs, ir_rhs])[0]
             }
             FloatBinOp::Atan2 => {
-                let lhs_type = self.func.get_val_type(lhs);
-                let ir_lhs_type = self.type_converter.convert(lhs_type);
-                let mut sig = self.module.make_signature();
-
-                sig.params
-                    .extend_from_slice(&[AbiParam::new(ir_lhs_type), AbiParam::new(ir_lhs_type)]);
-                sig.returns.push(AbiParam::new(ir_lhs_type));
-                let func_id = match lhs_type {
-                    IRType::F32 => self
-                        .module
-                        .declare_function("f32_atan2", Linkage::Import, &sig)
-                        .unwrap(),
-                    IRType::F64 => self
-                        .module
-                        .declare_function("f64_atan2", Linkage::Import, &sig)
-                        .unwrap(),
-                    _ => panic!("Non-float type is passed to fbop"),
-                };
-                let func_ref = self.module.declare_func_in_func(func_id, self.builder.func);
-                let call = self.builder.ins().call(func_ref, &[ir_lhs, ir_rhs]);
-                self.builder.inst_results(call)[0]
+                self.call_ext_func_f("f32_atan2", "f64_atan2", &[lhs, rhs], &[ir_lhs, ir_rhs])[0]
+            }
+            FloatBinOp::Log => {
+                self.call_ext_func_f("f32_log", "f64_log", &[lhs, rhs], &[ir_lhs, ir_rhs])[0]
             }
             FloatBinOp::Min => self.builder.ins().fmin(ir_lhs, ir_rhs),
             FloatBinOp::Max => self.builder.ins().fmax(ir_lhs, ir_rhs),

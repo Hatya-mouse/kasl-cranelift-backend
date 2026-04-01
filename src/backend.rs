@@ -14,7 +14,7 @@
 //  limitations under the License.
 //
 
-use crate::{InstTranslator, type_conversion::TypeConverter};
+use crate::{InstTranslator, symbol_imports::import_symbols, type_conversion::TypeConverter};
 use cranelift::prelude::{AbiParam, Configurable, FunctionBuilder, FunctionBuilderContext};
 use cranelift_codegen::{settings, verify_function};
 use cranelift_jit::{JITBuilder, JITModule};
@@ -39,7 +39,9 @@ impl Default for CraneliftBackend {
         let isa = isa_builder
             .finish(settings::Flags::new(flag_builder))
             .unwrap();
-        let builder = JITBuilder::with_isa(isa, cranelift_module::default_libcall_names());
+        let mut builder = JITBuilder::with_isa(isa, cranelift_module::default_libcall_names());
+
+        import_symbols(&mut builder);
 
         let module = JITModule::new(builder);
 
