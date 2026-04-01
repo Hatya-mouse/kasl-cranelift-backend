@@ -23,7 +23,7 @@ use cranelift::prelude::{FunctionBuilder, Variable};
 use cranelift_codegen::ir;
 use cranelift_jit::JITModule;
 use kasl_ir::Function;
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 
 /// A struct to translate the instructions to cranelift IR.
 pub(crate) struct InstTranslator<'a> {
@@ -32,7 +32,7 @@ pub(crate) struct InstTranslator<'a> {
     func: Function,
     type_converter: TypeConverter,
 
-    blocks: HashMap<kasl_ir::Block, ir::Block>,
+    blocks: BTreeMap<kasl_ir::Block, ir::Block>,
     vals: HashMap<kasl_ir::Value, ir::Value>,
     vars: HashMap<kasl_ir::Variable, Variable>,
 }
@@ -50,7 +50,7 @@ impl<'a> InstTranslator<'a> {
             builder,
             func,
             type_converter,
-            blocks: HashMap::new(),
+            blocks: BTreeMap::new(),
             vals: HashMap::new(),
             vars: HashMap::new(),
         }
