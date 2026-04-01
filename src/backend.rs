@@ -113,5 +113,8 @@ impl CraneliftBackend {
         // Create a translator and translate the instructions to Cranelift IR
         let mut translator = InstTranslator::new(module, builder, func, type_converter);
         translator.translate();
+
+        // Finalize the function
+        translator.builder.finalize();
     }
 }

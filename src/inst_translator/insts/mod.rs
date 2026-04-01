@@ -196,7 +196,15 @@ impl InstTranslator<'_> {
             Inst::FUnaryOp { op, operand, dst } => {
                 self.translate_fuop(op, operand, dst);
             }
-            _ => (),
+            Inst::ICmp { cmp, lhs, rhs, dst } => {
+                self.translate_icmp(cmp, lhs, rhs, dst);
+            }
+            Inst::FCmp { cmp, lhs, rhs, dst } => {
+                self.translate_fcmp(cmp, lhs, rhs, dst);
+            }
+            Inst::ICmpImm { cmp, lhs, rhs, dst } => {
+                self.translate_icmp_imm(cmp, lhs, rhs, dst);
+            }
         }
     }
 }

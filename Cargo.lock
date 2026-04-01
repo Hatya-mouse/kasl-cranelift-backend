@@ -295,7 +295,7 @@ dependencies = [
 [[package]]
 name = "kasl-ir"
 version = "0.1.0"
-source = "git+https://github.com/hatya-mouse/kasl-ir#fefb0a109f1506e44e8017e9c3d8b0cfb5628788"
+source = "git+https://github.com/hatya-mouse/kasl-ir#5c1ce3ac2be8f6830411b1e49f2c32b929666b83"
 
 [[package]]
 name = "libc"
