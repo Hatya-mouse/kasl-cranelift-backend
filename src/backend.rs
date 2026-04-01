@@ -87,7 +87,7 @@ impl CraneliftBackend {
     }
 
     /// Translates the function to cranelift IR.
-    pub fn translate(&mut self, func: Function) {
+    fn translate(&mut self, func: Function) {
         let module = self.module.as_mut().unwrap();
         let type_converter = TypeConverter::new(module);
 
