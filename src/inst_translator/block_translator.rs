@@ -25,10 +25,16 @@ impl InstTranslator<'_> {
         // Get the block data
         if let Some(block_data) = self.func.get_block(&kasl_block) {
             // Get the block parameters and register them as a value
-            let params = self.builder.block_params(ir_block);
-            for (kasl_param, ir_param) in block_data.get_params().iter().zip(params.iter()) {
+            let params = block_data.get_params().iter().map(|param| {
+                self.builder.append_block_param(
+                    ir_block,
+                    self.type_converter.convert(self.func.get_val_type(*param)),
+                )
+            });
+
+            for (kasl_param, ir_param) in block_data.get_params().iter().zip(params) {
                 println!("Inserting params!!! {}", kasl_param);
-                self.vals.insert(*kasl_param, *ir_param);
+                self.vals.insert(*kasl_param, ir_param);
             }
 
             // Translate the instructions
