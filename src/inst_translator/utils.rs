@@ -15,11 +15,16 @@
 //
 
 use cranelift::prelude::Variable;
-use cranelift_codegen::ir;
+use cranelift_codegen::ir::{self, BlockArg};
 
 use crate::InstTranslator;
 
 impl InstTranslator<'_> {
+    /// Returns a Cranelift value from KASL-IR value.
+    pub(super) fn get_block(&self, kasl_block: &kasl_ir::Block) -> ir::Block {
+        self.blocks[kasl_block]
+    }
+
     /// Returns a Cranelift value from KASL-IR value.
     pub(super) fn get_val(&self, kasl_val: &kasl_ir::Value) -> ir::Value {
         self.vals[kasl_val]
@@ -28,6 +33,13 @@ impl InstTranslator<'_> {
     /// Returns a Cranelift variable from KASL-IR variable.
     pub(super) fn get_var(&self, kasl_var: &kasl_ir::Variable) -> Variable {
         self.vars[kasl_var]
+    }
+
+    /// Converts an slice of KASL-IR values into vector of Cranelift BlockArg.
+    pub(super) fn convert_args(&self, args: &[kasl_ir::Value]) -> Vec<BlockArg> {
+        args.iter()
+            .map(|arg| BlockArg::Value(self.get_val(arg)))
+            .collect()
     }
 
     /// Converts a KASL-IR offset into raw offset integer.

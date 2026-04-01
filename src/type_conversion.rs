@@ -44,6 +44,19 @@ impl TypeConverter {
         }
     }
 
+    pub fn get_size(&self, ty: IRType) -> u32 {
+        match ty {
+            IRType::I8 => 1,
+            IRType::I16 => 2,
+            IRType::I32 => 4,
+            IRType::I64 => 8,
+            IRType::F32 => 4,
+            IRType::F64 => 8,
+            IRType::Void => 0,
+            IRType::Ptr => self.pointer_type.bytes(),
+        }
+    }
+
     pub fn pointer_type(&self) -> ir::Type {
         self.pointer_type
     }
