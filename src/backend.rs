@@ -15,7 +15,9 @@
 //
 
 use crate::{InstTranslator, symbol_imports::import_symbols, type_conversion::TypeConverter};
-use cranelift::prelude::{AbiParam, Configurable, FunctionBuilder, FunctionBuilderContext};
+use cranelift::prelude::{
+    AbiParam, Configurable, FunctionBuilder, FunctionBuilderContext, Signature,
+};
 use cranelift_codegen::{settings, verify_function};
 use cranelift_jit::{JITBuilder, JITModule};
 use cranelift_module::{Linkage, Module};
@@ -25,6 +27,7 @@ pub struct CraneliftBackend {
     builder_ctx: FunctionBuilderContext,
     ctx: cranelift_codegen::Context,
     module: Option<JITModule>,
+    sig: Signature,
 }
 
 impl Default for CraneliftBackend {
@@ -36,9 +39,13 @@ impl Default for CraneliftBackend {
         flag_builder.set("enable_alias_analysis", "true").unwrap();
         let isa_builder = cranelift_native::builder()
             .unwrap_or_else(|msg| panic!("The host machine is not supported: {}", msg));
+
         let isa = isa_builder
             .finish(settings::Flags::new(flag_builder))
             .unwrap();
+        let call_conv = isa.default_call_conv();
+        let sig = Signature::new(call_conv);
+
         let mut builder = JITBuilder::with_isa(isa, cranelift_module::default_libcall_names());
 
         import_symbols(&mut builder);
@@ -49,6 +56,7 @@ impl Default for CraneliftBackend {
             builder_ctx: FunctionBuilderContext::new(),
             ctx: module.make_context(),
             module: Some(module),
+            sig,
         }
     }
 }
@@ -73,7 +81,7 @@ impl CraneliftBackend {
         let module = self.module.as_mut().unwrap();
 
         let id = module
-            .declare_function("main", Linkage::Export, &self.ctx.func.signature)
+            .declare_function("main", Linkage::Export, &self.sig)
             .map_err(|e| e.to_string())?;
         module
             .define_function(id, &mut self.ctx)
@@ -100,11 +108,7 @@ impl CraneliftBackend {
         for arg in entry_block.get_params() {
             let arg_type = func.get_val_type(*arg);
             let converted_type = type_converter.convert(arg_type);
-            self.ctx
-                .func
-                .signature
-                .params
-                .push(AbiParam::new(converted_type));
+            self.sig.params.push(AbiParam::new(converted_type));
         }
 
         // Create a function builder
