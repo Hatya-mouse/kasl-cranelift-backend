@@ -14,10 +14,16 @@
 //  limitations under the License.
 //
 
-mod backend;
-mod inst_translator;
-mod symbol_imports;
-mod type_conversion;
+use crate::CraneliftBackend;
+use cranelift_jit::JITBuilder;
 
-pub use backend::CraneliftBackend;
-pub(crate) use inst_translator::InstTranslator;
+impl CraneliftBackend {
+    /// Import the functions for external function call.
+    pub(super) fn import_symbols(&mut self, builder: &mut JITBuilder) {
+        builder.symbol("f32_powf", f32::powf as *const u8);
+        builder.symbol("f64_powf", f64::powf as *const u8);
+
+        builder.symbol("f32_atan2", f32::powf as *const u8);
+        builder.symbol("f64_atan2", f64::powf as *const u8);
+    }
+}

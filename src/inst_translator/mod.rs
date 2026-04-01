@@ -27,7 +27,7 @@ use std::collections::HashMap;
 
 /// A struct to translate the instructions to cranelift IR.
 pub(crate) struct InstTranslator<'a> {
-    module: &'a JITModule,
+    module: &'a mut JITModule,
     builder: FunctionBuilder<'a>,
     func: Function,
     type_converter: TypeConverter,
@@ -40,7 +40,7 @@ pub(crate) struct InstTranslator<'a> {
 impl<'a> InstTranslator<'a> {
     /// Creates a new InstTranslator instance.
     pub fn new(
-        module: &'a JITModule,
+        module: &'a mut JITModule,
         builder: FunctionBuilder<'a>,
         func: Function,
         type_converter: TypeConverter,
