@@ -14,14 +14,18 @@
 //  limitations under the License.
 //
 
+use crate::InstTranslator;
 use cranelift::prelude::Variable;
 use cranelift_codegen::ir::{self, BlockArg};
-use crate::InstTranslator;
 
 impl InstTranslator<'_> {
     /// Returns a Cranelift value from KASL-IR value.
     pub(super) fn get_block(&self, kasl_block: &kasl_ir::Block) -> ir::Block {
-        self.blocks[kasl_block]
+        self.blocks
+            .iter()
+            .find(|block| &block.0 == kasl_block)
+            .unwrap()
+            .1
     }
 
     /// Returns a Cranelift value from KASL-IR value.

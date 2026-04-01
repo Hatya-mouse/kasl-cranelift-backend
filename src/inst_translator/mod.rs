@@ -23,7 +23,7 @@ use cranelift::prelude::{FunctionBuilder, Variable};
 use cranelift_codegen::ir;
 use cranelift_jit::JITModule;
 use kasl_ir::Function;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::HashMap;
 
 /// A struct to translate the instructions to cranelift IR.
 pub(crate) struct InstTranslator<'a> {
@@ -32,7 +32,7 @@ pub(crate) struct InstTranslator<'a> {
     func: Function,
     type_converter: TypeConverter,
 
-    blocks: BTreeMap<kasl_ir::Block, ir::Block>,
+    blocks: Vec<(kasl_ir::Block, ir::Block)>,
     vals: HashMap<kasl_ir::Value, ir::Value>,
     vars: HashMap<kasl_ir::Variable, Variable>,
 }
@@ -50,7 +50,7 @@ impl<'a> InstTranslator<'a> {
             builder,
             func,
             type_converter,
-            blocks: BTreeMap::new(),
+            blocks: Vec::new(),
             vals: HashMap::new(),
             vars: HashMap::new(),
         }
@@ -62,9 +62,8 @@ impl<'a> InstTranslator<'a> {
         let blocks = self.func.sorted_blocks();
         for block in blocks {
             let ir_block = self.builder.create_block();
-            self.blocks.insert(block, ir_block);
+            self.blocks.push((block, ir_block));
         }
-        println!("{:?}", self.blocks);
 
         // Declare all variables
         for kasl_var in self.func.get_vars() {
@@ -76,7 +75,6 @@ impl<'a> InstTranslator<'a> {
 
         // Translate the blocks
         for (kasl_block, ir_block) in self.blocks.clone() {
-            println!("{}", kasl_block);
             self.translate_block(kasl_block, ir_block);
         }
 
