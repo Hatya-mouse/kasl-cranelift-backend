@@ -14,8 +14,12 @@
 //  limitations under the License.
 //
 
+mod bin_op;
+mod cmp;
+mod cmp_imm;
 mod const_val;
 mod resize;
+mod unary_op;
 
 use crate::InstTranslator;
 use cranelift::prelude::{InstBuilder, MemFlags, StackSlotData, StackSlotKind};
@@ -143,7 +147,6 @@ impl InstTranslator<'_> {
                 let ir_vals: Vec<ir::Value> = vals.iter().map(|val| self.get_val(val)).collect();
                 self.builder.ins().return_(&ir_vals);
             }
-
             Inst::Select {
                 cond,
                 then_val,
@@ -179,6 +182,12 @@ impl InstTranslator<'_> {
                 let ir_offset = self.convert_offset(offset);
                 let val = self.builder.ins().iadd_imm(ir_ptr, ir_offset as i64);
                 self.vals.insert(dst, val);
+            }
+            Inst::IBinOp { op, lhs, rhs, dst } => {
+                self.translate_ibop(op, lhs, rhs, dst);
+            }
+            Inst::FBinOp { op, lhs, rhs, dst } => {
+                self.translate_fbop(op, lhs, rhs, dst);
             }
             _ => (),
         }
