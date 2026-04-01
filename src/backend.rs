@@ -27,7 +27,6 @@ pub struct CraneliftBackend {
     builder_ctx: FunctionBuilderContext,
     ctx: cranelift_codegen::Context,
     module: Option<JITModule>,
-    sig: Signature,
 }
 
 impl Default for CraneliftBackend {
@@ -52,11 +51,13 @@ impl Default for CraneliftBackend {
 
         let module = JITModule::new(builder);
 
+        let mut ctx = module.make_context();
+        ctx.func.signature = sig;
+
         Self {
             builder_ctx: FunctionBuilderContext::new(),
-            ctx: module.make_context(),
+            ctx,
             module: Some(module),
-            sig,
         }
     }
 }
@@ -81,7 +82,7 @@ impl CraneliftBackend {
         let module = self.module.as_mut().unwrap();
 
         let id = module
-            .declare_function("main", Linkage::Export, &self.sig)
+            .declare_function("main", Linkage::Export, &self.ctx.func.signature)
             .map_err(|e| e.to_string())?;
         module
             .define_function(id, &mut self.ctx)
@@ -108,7 +109,11 @@ impl CraneliftBackend {
         for arg in entry_block.get_params() {
             let arg_type = func.get_val_type(*arg);
             let converted_type = type_converter.convert(arg_type);
-            self.sig.params.push(AbiParam::new(converted_type));
+            self.ctx
+                .func
+                .signature
+                .params
+                .push(AbiParam::new(converted_type));
         }
 
         // Create a function builder
