@@ -33,7 +33,6 @@ impl InstTranslator<'_> {
             });
 
             for (kasl_param, ir_param) in block_data.get_params().iter().zip(params) {
-                println!("Inserting params!!! {}", kasl_param);
                 self.vals.insert(*kasl_param, ir_param);
             }
 
