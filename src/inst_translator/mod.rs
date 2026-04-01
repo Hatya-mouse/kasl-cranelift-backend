@@ -75,6 +75,7 @@ impl<'a> InstTranslator<'a> {
 
         // Translate the blocks
         for (kasl_block, ir_block) in self.blocks.clone() {
+            println!("{}", kasl_block);
             self.translate_block(kasl_block, ir_block);
         }
 
