@@ -1,0 +1,7 @@
+[package]
+name = "kasl-cranelift-backend"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+kasl-ir = { git = "https://github.com/hatya-mouse/kasl-ir", version = "0.1.0" }
