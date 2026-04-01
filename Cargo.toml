@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2024"
 license = "Apache-2.0"
 
+[lib]
+name = "kasl_cranelift_backend"
+path = "src/lib.rs"
+
 [dependencies]
 cranelift = "0.130.0"
 cranelift-codegen = "0.130.0"
