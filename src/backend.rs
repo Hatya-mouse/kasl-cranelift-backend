@@ -66,6 +66,8 @@ impl CraneliftBackend {
     pub fn compile(&mut self, func: Function) -> Result<*const u8, String> {
         self.translate(func);
 
+        println!("{}", self.ctx.func);
+
         // Verify the function
         let verifier_flags = settings::Flags::new(settings::builder());
         verify_function(&self.ctx.func, &verifier_flags).map_err(|e| e.to_string())?;
