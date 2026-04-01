@@ -27,6 +27,7 @@ impl InstTranslator<'_> {
             // Get the block parameters and register them as a value
             let params = self.builder.block_params(ir_block);
             for (kasl_param, ir_param) in block_data.get_params().iter().zip(params.iter()) {
+                println!("Inserting params!!! {}", kasl_param);
                 self.vals.insert(*kasl_param, *ir_param);
             }
 
