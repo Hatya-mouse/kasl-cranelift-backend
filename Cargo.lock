@@ -295,7 +295,8 @@ dependencies = [
 [[package]]
 name = "kasl-ir"
 version = "0.1.0"
-source = "git+https://github.com/hatya-mouse/kasl-ir#8183c260985057056e71b32a0f4b2e47419a7788"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7d47701276b8b5bc4eaa23203070eeb899e34bb59084580d949c70d6a62cd632"
 
 [[package]]
 name = "libc"
