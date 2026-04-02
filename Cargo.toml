@@ -3,6 +3,10 @@ name = "kasl-cranelift-backend"
 version = "0.1.1"
 edition = "2024"
 license = "Apache-2.0"
+description = "Backend implementation of KASL for Cranelift."
+repository = "https://github.com/hatya-mouse/kasl-cranelift-backend"
+homepage = "https://hatya.dev"
+readme = "README.md"
 
 [lib]
 name = "kasl_cranelift_backend"
