@@ -58,8 +58,6 @@ impl<'a> InstTranslator<'a> {
 
     /// Translates the function to cranelift IR.
     pub fn translate(&mut self) {
-        println!("Func: {}", self.func);
-
         // Create cranelift blocks for every blocks
         let blocks = self.func.sorted_blocks();
         for block in blocks {
@@ -78,6 +76,10 @@ impl<'a> InstTranslator<'a> {
         // Translate the blocks
         for (kasl_block, ir_block) in self.blocks.clone() {
             println!("Translating KASL {} -> CLIF {}", kasl_block, ir_block);
+            println!(
+                "Block length: {}",
+                self.func.get_block(&kasl_block).unwrap().get_insts().len()
+            );
             self.translate_block(kasl_block, ir_block);
         }
 
