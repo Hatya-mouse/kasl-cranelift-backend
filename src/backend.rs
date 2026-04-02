@@ -63,6 +63,7 @@ impl Drop for CraneliftBackend {
 
 impl CraneliftBackend {
     /// Compiles the program to executable function.
+    /// Compiled program will live until the CraneliftBackend is dropped.
     pub fn compile(&mut self, func: Function) -> Result<*const u8, String> {
         self.translate(func);
 
