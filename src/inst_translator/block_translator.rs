@@ -37,7 +37,7 @@ impl InstTranslator<'_> {
             }
 
             // Translate the instructions
-            for inst in block_data.get_insts().iter().cloned().collect::<Vec<_>>() {
+            for inst in block_data.get_insts().to_vec() {
                 self.translate_inst(inst);
             }
         }

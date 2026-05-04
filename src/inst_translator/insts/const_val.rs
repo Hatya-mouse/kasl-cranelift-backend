@@ -25,7 +25,7 @@ impl InstTranslator<'_> {
             Const::I8(val) => self.builder.ins().iconst(types::I8, val as i64),
             Const::I16(val) => self.builder.ins().iconst(types::I16, val as i64),
             Const::I32(val) => self.builder.ins().iconst(types::I32, val as i64),
-            Const::I64(val) => self.builder.ins().iconst(types::I64, val as i64),
+            Const::I64(val) => self.builder.ins().iconst(types::I64, val),
             Const::F32(val) => self.builder.ins().f32const(val),
             Const::F64(val) => self.builder.ins().f64const(val),
             Const::Ptr(val) => self

@@ -57,7 +57,7 @@ impl InstTranslator<'_> {
             _ => panic!("Non-float type is passed to fbop"),
         };
         let func_ref = self.module.declare_func_in_func(func_id, self.builder.func);
-        let call = self.builder.ins().call(func_ref, &ir_args);
+        let call = self.builder.ins().call(func_ref, ir_args);
         self.builder.inst_results(call)
     }
 }
